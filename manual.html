@@ -1,0 +1,320 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>ESL Defuse — Universal Manual</title>
+  <style>
+    :root{
+      --ink:#17202a;
+      --muted:#5f6b76;
+      --line:#cbd3da;
+      --accent:#e8b923;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;background:#e8edf1;color:var(--ink);
+      font-family:Arial,Helvetica,sans-serif;
+    }
+    .toolbar{
+      position:sticky;top:0;z-index:10;
+      display:flex;justify-content:center;gap:12px;padding:12px;
+      background:#17202a;color:white
+    }
+    .toolbar button{
+      border:0;border-radius:8px;padding:10px 18px;
+      font-weight:900;background:var(--accent);color:#111;cursor:pointer
+    }
+    .manual{width:min(210mm,calc(100% - 24px));margin:18px auto 40px;display:grid;gap:18px}
+    .page{
+      position:relative;min-height:297mm;background:white;
+      padding:13mm 14mm 12mm;box-shadow:0 6px 24px rgba(0,0,0,.15);
+      overflow:hidden
+    }
+    .page-number{position:absolute;right:12mm;bottom:8mm;color:#8b959f;font-size:10pt}
+    .head{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;border-bottom:3px solid var(--ink);padding-bottom:8px;margin-bottom:12px}
+    .series{font-size:9pt;letter-spacing:.14em;font-weight:900;color:var(--muted)}
+    h1{font-size:23pt;margin:2px 0 0}
+    .badge{border:2px solid var(--ink);padding:7px 10px;font-size:9pt;font-weight:900;letter-spacing:.08em}
+    .say{
+      border:2px solid #73808c;border-radius:10px;padding:10px 12px;margin:10px 0 14px;background:#f7f9fa
+    }
+    .say strong{display:block;font-size:9pt;letter-spacing:.1em;margin-bottom:6px}
+    .phrases{display:flex;gap:8px;flex-wrap:wrap}
+    .phrase{border:1px solid #aeb8c1;border-radius:999px;padding:6px 10px;font-weight:800;font-size:10pt;background:white}
+    .box{border:2px solid var(--ink);border-radius:12px;overflow:hidden;margin:12px 0}
+    .box-title{background:var(--ink);color:white;padding:7px 10px;font-weight:900;letter-spacing:.08em}
+    table{width:100%;border-collapse:collapse}
+    th,td{border-bottom:1px solid var(--line);padding:9px 10px;text-align:left;vertical-align:middle}
+    tr:last-child td{border-bottom:0}
+    th{font-size:9pt;color:var(--muted);letter-spacing:.08em}
+    .big{font-weight:950;font-size:15pt}
+    .answer{font-weight:950;font-size:14pt}
+    .swatch{display:inline-block;width:24px;height:24px;border-radius:5px;border:2px solid #333;margin-right:8px;vertical-align:middle}
+    .rules{display:grid;gap:10px}
+    .rule{
+      display:grid;grid-template-columns:74px 1fr;gap:12px;
+      border:2px solid var(--line);border-radius:12px;overflow:hidden
+    }
+    .count{display:grid;place-items:center;background:#212a33;color:white;font-size:22pt;font-weight:950}
+    .rule-text{padding:12px}
+    .rule-text p{margin:0 0 6px;font-size:12pt}
+    .rule-text p:last-child{margin-bottom:0}
+    .animal-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+    .animal{
+      border:2px solid var(--line);border-radius:12px;padding:12px;
+      display:flex;align-items:center;justify-content:space-between;gap:10px
+    }
+    .animal strong{font-size:14pt}
+    .emoji{font-size:29pt;margin-right:8px}
+    .seq{display:flex;gap:6px}
+    .num{
+      width:42px;height:42px;border-radius:50%;display:grid;place-items:center;
+      background:#17202a;color:white;font-size:17pt;font-weight:950
+    }
+    .lookup-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:9px}
+    .lookup{border:2px solid var(--line);border-radius:12px;padding:9px;display:grid;grid-template-columns:1fr 30px 1fr;align-items:center;gap:6px}
+    .lookup strong{text-align:center;font-size:10pt}.lookup .arrow{text-align:center;font-size:17pt}
+    .dirs{display:grid;gap:10px}
+    .dir{
+      border:2px solid var(--line);border-radius:12px;padding:10px 12px;
+      display:grid;grid-template-columns:1fr 2fr;align-items:center;gap:12px
+    }
+    .dir strong{font-size:15pt}.arrows{font-size:25pt;font-weight:950;letter-spacing:.12em}
+    .cat-map{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+    .cat{
+      border:2px solid var(--line);border-radius:12px;padding:10px;
+      display:grid;grid-template-columns:1fr 34px 1fr;align-items:center;gap:8px
+    }
+    .cat strong{text-align:center}.arrow{text-align:center;font-size:18pt}
+    .banks{display:grid;grid-template-columns:repeat(2,1fr)}
+    .bank{padding:9px 10px;border-bottom:1px solid var(--line)}
+    .bank:nth-child(odd){border-right:1px solid var(--line)}
+    .bank strong{display:block;margin-bottom:4px}
+    .bank span{font-size:10pt;color:var(--muted);font-weight:700}
+    .note{border-left:5px solid var(--accent);padding:9px 11px;background:#fff9df;margin-top:12px;font-size:10pt}
+@media(max-width:760px){
+      .page{min-height:auto;padding:22px}.manual{width:calc(100% - 18px)}
+      .animal-grid,.cat-map,.banks{grid-template-columns:1fr}
+      .bank:nth-child(odd){border-right:0}
+    }
+    @media print{
+      @page{size:A4 portrait;margin:0}
+      body{background:white}.toolbar{display:none!important}.manual{display:block;width:auto;margin:0}
+      .page{width:210mm;height:297mm;min-height:297mm;margin:0;box-shadow:none;break-after:page;page-break-after:always}
+      .page:last-child{break-after:auto;page-break-after:auto}
+    }
+  </style>
+</head>
+<body>
+  <div class="toolbar">
+    <button id="printBtn" type="button">Print Universal Manual</button>
+  </div>
+
+  <main class="manual">
+    <section class="page">
+      <header class="head">
+        <div><div class="series">ESL DEFUSE · UNIVERSAL MANUAL · MODULE 1</div><h1>🎨 Color Panel</h1></div>
+        <div class="badge">WORKS FOR EVERY BOMB</div>
+      </header>
+      <div class="say">
+        <strong>USE ENGLISH</strong>
+        <div class="phrases"><span class="phrase">What word do you see?</span><span class="phrase">I see ___.</span><span class="phrase">Press ___.</span></div>
+      </div>
+      <div class="box">
+        <div class="box-title">DISPLAY WORD → PRESS THIS COLOR</div>
+        <table>
+          <thead><tr><th>DISPLAY</th><th>PRESS</th></tr></thead>
+          <tbody>
+            <tr><td class="big">APPLE</td><td class="answer"><span class="swatch" style="background:#7454a6"></span>PURPLE</td></tr>
+            <tr><td class="big">OCEAN</td><td class="answer"><span class="swatch" style="background:#c29c1d"></span>YELLOW</td></tr>
+            <tr><td class="big">GRASS</td><td class="answer"><span class="swatch" style="background:#3175bd"></span>BLUE</td></tr>
+            <tr><td class="big">BANANA</td><td class="answer"><span class="swatch" style="background:#c9424b"></span>RED</td></tr>
+            <tr><td class="big">GRAPE</td><td class="answer"><span class="swatch" style="background:#36865e"></span>GREEN</td></tr>
+            <tr><td class="big">SUN</td><td class="answer"><span class="swatch" style="background:#3175bd"></span>BLUE</td></tr>
+            <tr><td class="big">SNOW</td><td class="answer"><span class="swatch" style="background:#c9424b"></span>RED</td></tr>
+            <tr><td class="big">LEMON</td><td class="answer"><span class="swatch" style="background:#7454a6"></span>PURPLE</td></tr>
+            <tr><td class="big">TREE</td><td class="answer"><span class="swatch" style="background:#c29c1d"></span>YELLOW</td></tr>
+            <tr><td class="big">NIGHT</td><td class="answer"><span class="swatch" style="background:#36865e"></span>GREEN</td></tr>
+            <tr><td class="big">ROSE</td><td class="answer"><span class="swatch" style="background:#3175bd"></span>BLUE</td></tr>
+            <tr><td class="big">CLOUD</td><td class="answer"><span class="swatch" style="background:#7454a6"></span>PURPLE</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="note"><strong>12 display words.</strong> Always use the table; the meaning does not tell you the answer.</div>
+      <div class="page-number">1 / 6</div>
+    </section>
+
+    <section class="page">
+      <header class="head">
+        <div><div class="series">ESL DEFUSE · UNIVERSAL MANUAL · MODULE 2</div><h1>✂️ Wires</h1></div>
+        <div class="badge">WORKS FOR EVERY BOMB</div>
+      </header>
+      <div class="say">
+        <strong>USE ENGLISH</strong>
+        <div class="phrases"><span class="phrase">How many wires?</span><span class="phrase">What colors?</span><span class="phrase">Cut the ___ wire.</span><span class="phrase">First / second / third / last</span></div>
+      </div>
+      <div class="rules">
+        <div class="rule"><div class="count">4</div><div class="rule-text"><p>Is there a <strong>RED</strong> wire?</p><p><strong>YES →</strong> Cut the first RED wire.</p><p><strong>NO →</strong> Cut the last wire.</p></div></div>
+        <div class="rule"><div class="count">5</div><div class="rule-text"><p>Are there <strong>2 or more YELLOW</strong> wires?</p><p><strong>YES →</strong> Cut the second YELLOW wire.</p><p><strong>NO →</strong> Cut the first BLUE wire.</p></div></div>
+        <div class="rule"><div class="count">6</div><div class="rule-text"><p>Is there a <strong>BLACK</strong> wire?</p><p><strong>YES →</strong> Cut the first BLACK wire.</p><p><strong>NO →</strong> Cut the third wire.</p></div></div>
+      </div>
+      <div class="page-number">2 / 6</div>
+    </section>
+
+    <section class="page">
+      <header class="head">
+        <div><div class="series">ESL DEFUSE · UNIVERSAL MANUAL · MODULE 3</div><h1>🐾 Animal Numbers</h1></div>
+        <div class="badge">WORKS FOR EVERY BOMB</div>
+      </header>
+      <div class="say">
+        <strong>USE ENGLISH</strong>
+        <div class="phrases"><span class="phrase">What animal do you see?</span><span class="phrase">I see a ___.</span><span class="phrase">Press four numbers in order.</span></div>
+      </div>
+      <div class="animal-grid">
+        <div class="animal"><div><span class="emoji">🐱</span><strong>CAT</strong></div><div class="seq"><div class="num">2</div><div class="num">4</div><div class="num">1</div><div class="num">7</div></div></div>
+        <div class="animal"><div><span class="emoji">🐶</span><strong>DOG</strong></div><div class="seq"><div class="num">5</div><div class="num">1</div><div class="num">8</div><div class="num">3</div></div></div>
+        <div class="animal"><div><span class="emoji">🐰</span><strong>RABBIT</strong></div><div class="seq"><div class="num">7</div><div class="num">3</div><div class="num">2</div><div class="num">9</div></div></div>
+        <div class="animal"><div><span class="emoji">🐦</span><strong>BIRD</strong></div><div class="seq"><div class="num">3</div><div class="num">8</div><div class="num">6</div><div class="num">1</div></div></div>
+        <div class="animal"><div><span class="emoji">🐟</span><strong>FISH</strong></div><div class="seq"><div class="num">8</div><div class="num">2</div><div class="num">5</div><div class="num">4</div></div></div>
+        <div class="animal"><div><span class="emoji">🐻</span><strong>BEAR</strong></div><div class="seq"><div class="num">4</div><div class="num">6</div><div class="num">9</div><div class="num">2</div></div></div>
+        <div class="animal"><div><span class="emoji">🐴</span><strong>HORSE</strong></div><div class="seq"><div class="num">1</div><div class="num">9</div><div class="num">3</div><div class="num">7</div></div></div>
+        <div class="animal"><div><span class="emoji">🐵</span><strong>MONKEY</strong></div><div class="seq"><div class="num">6</div><div class="num">5</div><div class="num">2</div><div class="num">8</div></div></div>
+        <div class="animal"><div><span class="emoji">🐯</span><strong>TIGER</strong></div><div class="seq"><div class="num">9</div><div class="num">7</div><div class="num">4</div><div class="num">1</div></div></div>
+        <div class="animal"><div><span class="emoji">🐘</span><strong>ELEPHANT</strong></div><div class="seq"><div class="num">2</div><div class="num">9</div><div class="num">6</div><div class="num">5</div></div></div>
+        <div class="animal"><div><span class="emoji">🐼</span><strong>PANDA</strong></div><div class="seq"><div class="num">5</div><div class="num">8</div><div class="num">1</div><div class="num">4</div></div></div>
+        <div class="animal"><div><span class="emoji">🐸</span><strong>FROG</strong></div><div class="seq"><div class="num">7</div><div class="num">1</div><div class="num">3</div><div class="num">6</div></div></div>
+      </div>
+      <div class="note">Press all four numbers <strong>in order</strong>. A wrong number resets the sequence.</div>
+      <div class="page-number">3 / 6</div>
+    </section>
+
+    <section class="page">
+      <header class="head">
+        <div><div class="series">ESL DEFUSE · UNIVERSAL MANUAL · MODULE 4</div><h1>🧭 Directions</h1></div>
+        <div class="badge">WORKS FOR EVERY BOMB</div>
+      </header>
+      <div class="say">
+        <strong>USE ENGLISH</strong>
+        <div class="phrases"><span class="phrase">What place do you see?</span><span class="phrase">Up / down / left / right</span><span class="phrase">Again, please.</span></div>
+      </div>
+      <div class="dirs">
+        <div class="dir"><strong>SCHOOL</strong><div class="arrows">↑ → ↑</div></div>
+        <div class="dir"><strong>PARK</strong><div class="arrows">← ↑ ←</div></div>
+        <div class="dir"><strong>LIBRARY</strong><div class="arrows">↓ → →</div></div>
+        <div class="dir"><strong>STATION</strong><div class="arrows">→ ↓ ←</div></div>
+        <div class="dir"><strong>HOSPITAL</strong><div class="arrows">↑ ↑ ←</div></div>
+        <div class="dir"><strong>SUPERMARKET</strong><div class="arrows">→ → ↑</div></div>
+        <div class="dir"><strong>RESTAURANT</strong><div class="arrows">↓ ← ↑</div></div>
+        <div class="dir"><strong>POST OFFICE</strong><div class="arrows">← ↓ →</div></div>
+        <div class="dir"><strong>MUSEUM</strong><div class="arrows">↑ ← ↓</div></div>
+      </div>
+      <div class="page-number">4 / 6</div>
+    </section>
+
+    <section class="page">
+      <header class="head">
+        <div><div class="series">ESL DEFUSE · UNIVERSAL MANUAL · MODULE 5</div><h1>🔗 Word Lookup</h1></div>
+        <div class="badge">WORKS FOR EVERY BOMB</div>
+      </header>
+      <div class="say">
+        <strong>USE ENGLISH</strong>
+        <div class="phrases"><span class="phrase">What word is on the display?</span><span class="phrase">What are the choices?</span><span class="phrase">Press ___.</span></div>
+      </div>
+      <div class="box">
+        <div class="box-title">DISPLAY WORD → PRESS ITS ASSIGNED WORD</div>
+        <div class="lookup-grid" style="padding:10px">
+          <div class="lookup"><strong>APPLE</strong><div class="arrow">→</div><strong>DOG</strong></div>
+          <div class="lookup"><strong>DOG</strong><div class="arrow">→</div><strong>SCHOOL</strong></div>
+          <div class="lookup"><strong>SCHOOL</strong><div class="arrow">→</div><strong>RED</strong></div>
+          <div class="lookup"><strong>RED</strong><div class="arrow">→</div><strong>TENNIS</strong></div>
+          <div class="lookup"><strong>TENNIS</strong><div class="arrow">→</div><strong>BOOK</strong></div>
+          <div class="lookup"><strong>BOOK</strong><div class="arrow">→</div><strong>CAR</strong></div>
+          <div class="lookup"><strong>CAR</strong><div class="arrow">→</div><strong>RAIN</strong></div>
+          <div class="lookup"><strong>RAIN</strong><div class="arrow">→</div><strong>PIZZA</strong></div>
+          <div class="lookup"><strong>PIZZA</strong><div class="arrow">→</div><strong>CAT</strong></div>
+          <div class="lookup"><strong>CAT</strong><div class="arrow">→</div><strong>PARK</strong></div>
+          <div class="lookup"><strong>PARK</strong><div class="arrow">→</div><strong>BLUE</strong></div>
+          <div class="lookup"><strong>BLUE</strong><div class="arrow">→</div><strong>SOCCER</strong></div>
+          <div class="lookup"><strong>SOCCER</strong><div class="arrow">→</div><strong>PENCIL</strong></div>
+          <div class="lookup"><strong>PENCIL</strong><div class="arrow">→</div><strong>TRAIN</strong></div>
+          <div class="lookup"><strong>TRAIN</strong><div class="arrow">→</div><strong>SUN</strong></div>
+          <div class="lookup"><strong>SUN</strong><div class="arrow">→</div><strong>APPLE</strong></div>
+        </div>
+      </div>
+      <div class="note">The bomb shows <strong>1 display word and 6 choice buttons</strong>. Find the assigned word and press it. The display changes after every answer. Get <strong>3 correct answers</strong> to clear the module.</div>
+      <div class="page-number">5 / 6</div>
+    </section>
+    <section class="page">
+      <header class="head">
+        <div><div class="series">ESL DEFUSE · UNIVERSAL MANUAL · MODULE 6</div><h1>🧮 Calculator</h1></div>
+        <div class="badge">WORKS FOR EVERY BOMB</div>
+      </header>
+
+      <div class="say">
+        <strong>USE ENGLISH</strong>
+        <div class="phrases">
+          <span class="phrase">What are the numbers?</span>
+          <span class="phrase">What color is the light?</span>
+          <span class="phrase">Red / blue / green / yellow</span>
+          <span class="phrase">The answer is ___.</span>
+        </div>
+      </div>
+
+      <div class="box">
+        <div class="box-title">LIGHT COLOR → MATH SYMBOL</div>
+        <table>
+          <thead><tr><th>LIGHT</th><th>DO THIS</th><th>SYMBOL</th></tr></thead>
+          <tbody>
+            <tr>
+              <td class="big"><span class="swatch" style="background:#ff5d5d"></span>RED</td>
+              <td class="answer">ADD</td>
+              <td class="answer">+</td>
+            </tr>
+            <tr>
+              <td class="big"><span class="swatch" style="background:#5d9cff"></span>BLUE</td>
+              <td class="answer">SUBTRACT</td>
+              <td class="answer">−</td>
+            </tr>
+            <tr>
+              <td class="big"><span class="swatch" style="background:#64d29c"></span>GREEN</td>
+              <td class="answer">MULTIPLY</td>
+              <td class="answer">×</td>
+            </tr>
+            <tr>
+              <td class="big"><span class="swatch" style="background:#f0c94c"></span>YELLOW</td>
+              <td class="answer">DIVIDE</td>
+              <td class="answer">÷</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="box">
+        <div class="box-title">HOW TO DEFUSE</div>
+        <table>
+          <tbody>
+            <tr><td class="big">1</td><td>Ask for the <strong>two numbers</strong>.</td></tr>
+            <tr><td class="big">2</td><td>Ask for the <strong>light color</strong>.</td></tr>
+            <tr><td class="big">3</td><td>Use the table above to find the math symbol.</td></tr>
+            <tr><td class="big">4</td><td>Solve the calculation and tell the Defuser the answer.</td></tr>
+            <tr><td class="big">5</td><td>Get <strong>2 correct calculations</strong> to clear the module.</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="note">
+        For addition and subtraction, both displayed numbers are two digits. For multiplication and division, the numbers may be one or two digits. The number-pad order is randomized at the start of each bomb and stays the same during that bomb.
+        After every correct or wrong answer, the <strong>numbers and light change</strong>.
+      </div>
+
+      <div class="page-number">6 / 6</div>
+    </section>
+
+  </main>
+
+  <script>
+    document.getElementById("printBtn").addEventListener("click", () => window.print());
+  </script>
+</body>
+</html>
